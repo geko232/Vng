@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VPNsor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#F1ECFB; --bg-bot:#E3D7FA; --surface:#FFFFFF; --ink:#271C40; --muted:#8A7CAE;
+    --violet:#8C6FF0; --violet-deep:#6247C7; --violet-soft:#EFE8FD; --border:#E4DBF7;
+    --good:#2FAE82; --good-soft:#E3F7EF; --warn:#D6587A; --warn-soft:#FBE7ED;
+    --nav-bg:rgba(255,255,255,.84);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg-top:#180F2C; --bg-bot:#0E081B; --surface:#201733; --ink:#F1EBFF; --muted:#A99CC9;
+      --violet:#A98BFF; --violet-deep:#8A6EF0; --violet-soft:#2A2048; --border:#352A54;
+      --good:#49C99A; --good-soft:#163828; --warn:#F07D98; --warn-soft:#3A1B26;
+      --nav-bg:rgba(24,16,42,.84);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg-top:#180F2C; --bg-bot:#0E081B; --surface:#201733; --ink:#F1EBFF; --muted:#A99CC9;
+    --violet:#A98BFF; --violet-deep:#8A6EF0; --violet-soft:#2A2048; --border:#352A54;
+    --good:#49C99A; --good-soft:#163828; --warn:#F07D98; --warn-soft:#3A1B26;
+    --nav-bg:rgba(24,16,42,.84);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink)}
+  body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot));background-attachment:fixed;padding-top:env(safe-area-inset-top,0px)}
+  button,input{font:inherit}
+  .wrap{max-width:460px;margin:0 auto;min-height:100vh}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:18px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
+  .brand .dot{width:30px;height:30px;border-radius:9px;background:var(--violet-deep);display:flex;align-items:center;justify-content:center}
+  .greet{font-size:12px;color:var(--muted);text-align:right}.greet b{color:var(--ink);font-weight:700}
+  .panes{padding:0 18px 106px}.pane{display:none;animation:fade .22s ease both}.pane.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .hero{border-radius:26px;padding:25px 22px;color:#fff;background:linear-gradient(135deg,var(--violet-deep),var(--violet));box-shadow:0 14px 30px -14px rgba(98,71,199,.55)}
+  .hero .num{font-size:52px;font-weight:800;line-height:1}.hero .num span{font-size:18px;opacity:.86;margin-left:6px}
+  .hero .cap{margin-top:6px;font-size:14px;font-weight:600;opacity:.92}.hero .meta{margin-top:13px;font-size:13px;opacity:.85}
+  .badge{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:6px 12px;border-radius:100px;background:rgba(255,255,255,.18);font-size:13px;font-weight:700}
+  .badge i{width:7px;height:7px;border-radius:50%;background:#fff}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.tile{padding:16px 10px;background:var(--surface);border:1px solid var(--border);border-radius:17px;text-align:center;font-weight:700;font-size:12.5px;cursor:pointer}.tile .ic{display:block;font-size:22px;margin-bottom:5px}
+  .section{margin-top:22px}.section:first-child{margin-top:18px}.section h2{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px 2px}
+  .card,.rows{background:var(--surface);border:1px solid var(--border);border-radius:18px}
+  .card{padding:16px}.rows{overflow:hidden}.row{display:flex;justify-content:space-between;gap:14px;padding:13px 15px;border-bottom:1px solid var(--border);font-size:13.5px}.row:last-child{border-bottom:0}.row span:first-child{color:var(--muted)}.row span:last-child{font-weight:700;text-align:right}
+  .keybox{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;background:var(--violet-soft);border-radius:12px;padding:12px;overflow:auto;white-space:nowrap}
+  .loc{font-size:12.5px;color:var(--muted);margin-bottom:10px}.copybtn,.primary{width:100%;margin-top:11px;border:0;border-radius:13px;padding:13px;background:var(--violet-deep);color:#fff;font-weight:800;cursor:pointer}.copybtn.done{background:var(--good)}
+  .sub-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.secondary{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:13px;padding:12px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer}
+  .device{display:block;padding:15px 16px;background:var(--surface);border:1px solid var(--border);border-radius:17px;margin-bottom:10px}.device:last-child{margin-bottom:0}
+  .device-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.device-name{font-weight:800;font-size:14px}.device-meta{font-size:12px;color:var(--muted);margin-top:4px}.device-traffic{font-size:13px;font-weight:800;margin-top:12px}
+  .dot-ok{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 9px;border-radius:99px;background:var(--good-soft);color:var(--good);font-weight:800}.dot-off{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 9px;border-radius:99px;background:var(--warn-soft);color:var(--warn);font-weight:800}
+  .plan{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:10px}.plan .pname{font-weight:800;font-size:14px}.plan .pdays{font-size:12px;color:var(--muted);margin-top:2px}.plan .pprice{font-weight:800;color:var(--violet-deep)}
+  .profile-head{display:flex;align-items:center;gap:13px;margin-bottom:17px}.avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--violet-deep),var(--violet));color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}.pname2{font-weight:800;font-size:17px}.pid{font-size:12px;color:var(--muted);margin-top:2px}
+  .apps{display:grid;grid-template-columns:1fr 1fr;gap:10px}.app{display:block;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:15px;color:var(--ink);text-decoration:none;font-weight:800;font-size:13.5px}.app small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:3px}
+  .support{display:block;text-align:center;margin-top:20px;padding:14px;border-radius:15px;background:var(--violet-soft);color:var(--violet-deep);text-decoration:none;font-weight:800;font-size:14px}
+  .admin-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:13px 8px;text-align:center}.stat b{display:block;font-size:18px}.stat span{display:block;margin-top:3px;font-size:10.5px;color:var(--muted)}
+  .admin-list{max-height:320px;overflow:auto}.admin-user{padding:12px 14px;border-bottom:1px solid var(--border)}.admin-user:last-child{border-bottom:0}.admin-user-top{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:800}.admin-user-meta{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .field{margin-top:10px}.field label{display:block;font-size:11.5px;color:var(--muted);margin:0 0 6px 2px}.field input{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px 13px;outline:none}.field input:focus{border-color:var(--violet)}
+  .admin-note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:9px}
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}.empty .ic{font-size:38px;margin-bottom:8px}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--nav-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:8px 5px calc(8px + env(safe-area-inset-bottom,0px));z-index:20}
+  .navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:var(--muted);font-size:9.5px;font-weight:800;padding:5px 0;cursor:pointer}.navbtn .ic{font-size:20px;line-height:1}.navbtn.active{color:var(--violet-deep)}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="empty"><div class="ic">🛡</div>Открой мини-апп из бота.</div></div>
+<script>
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s).replace(/`/g,'&#96;');}
+function gb(v){if(v===null||v===undefined||v==='')return '—';const n=Number(v);if(!isFinite(n))return '—';if(n<0.01&&n>0)return n.toFixed(3)+' ГБ';return n.toFixed(2).replace(/[.]00$/,'')+' ГБ';}
+function dt(v){return v||'—';}
+function tg(){return window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;}
+function copyText(text,btn){navigator.clipboard?.writeText(text).catch(()=>{});btn.textContent='✅ Скопировано';btn.classList.add('done');setTimeout(()=>{btn.textContent='📋 Скопировать';btn.classList.remove('done');},1600);}
+function sendAdmin(payload){const app=tg();if(!app){alert('Открой приложение через Telegram');return;}try{app.sendData(JSON.stringify(payload));setTimeout(()=>{try{app.close();}catch(e){}},200);}catch(e){alert('Не удалось отправить действие');}}
+
+function render(d){
+ const root=document.getElementById('app');
+ const active=!!d.active; const left=d.left; const days=(left===null||left===undefined)?'∞':left; const initial=(d.name||'В').trim().charAt(0).toUpperCase();
+ const devices=Array.isArray(d.devices)?d.devices:[]; const isAdmin=!!d.is_admin;
+ const navAdmin=isAdmin?'<button class="navbtn" data-tab="admin"><span class="ic">👑</span>Админ</button>':'';
+ let keyPane='<div class="empty"><div class="ic">🔑</div>Ключ появится после оформления подписки.</div>';
+ if(d.key){keyPane=`<div class="card">${d.loc?`<div class="loc">🌍 ${escapeHtml(d.loc)}</div>`:''}<div class="keybox" id="keybox">${escapeHtml(d.key)}</div><div class="sub-actions"><button class="copybtn" id="copybtn">📋 Скопировать</button><a class="secondary" href="${escapeAttr(d.key)}" target="_blank" rel="noopener">↗️ Открыть ссылку</a></div></div><div class="card" style="margin-top:12px"><b>Как подключиться</b><div class="admin-note">Скопируй ссылку подписки и импортируй её в HAPP или v2RayTun. Эти клиенты работают с современными Xray/VLESS-конфигурациями.</div></div>`;}
+ let plansPane='<div class="empty"><div class="ic">💳</div>Тарифы скоро появятся.</div>';
+ if(Array.isArray(d.plans)&&d.plans.length){plansPane=d.plans.map(p=>{const [name,pdays,price]=p;const msg=encodeURIComponent(`Хочу тариф «${name}» (${price} ₽) для VPNsor. Мой ID: ${d.uid||''}`);const href=d.support?`${d.support}?text=${msg}`:'#';return `<a class="plan" href="${href}" target="_blank" rel="noopener"><div><div class="pname">${escapeHtml(name)}</div><div class="pdays">${pdays} дней · ${MAX_DEVICE_TEXT} устройств · безлимит</div></div><div class="pprice">${price} ₽</div></a>`}).join('');}
+ let devicePane='';
+ if(devices.length){devicePane=devices.map((x,i)=>{const used=x.used_gb===null?'нет данных':gb(x.used_gb);const online=x.online?'<span class="dot-ok">● онлайн</span>':'<span class="dot-off">● неактивно</span>';return `<div class="device"><div class="device-head"><div><div class="device-name">${escapeHtml(x.label||('Устройство '+(i+1)))}</div><div class="device-meta">${escapeHtml(x.platform||'Устройство')} · последнее подключение: ${escapeHtml(x.last_seen_text||'—')}</div></div>${online}</div><div class="device-traffic">Трафик устройства: <span>${used==='нет данных'?'—':used}</span></div></div>`}).join('');}
+ else {devicePane='<div class="empty"><div class="ic">📱</div>Устройств пока нет.<br>После первого подключения оно появится здесь.</div>';}
+ const adminUsers=Array.isArray(d.admin_users)?d.admin_users:[];
+ let adminPane=`<div class="section"><h2>Панель управления</h2><div class="admin-stat"><div class="stat"><b>${escapeHtml(d.admin_count??0)}</b><span>пользователей</span></div><div class="stat"><b>${escapeHtml(d.active_count??0)}</b><span>активных</span></div><div class="stat"><b>${escapeHtml(d.device_total??0)}</b><span>устройств</span></div></div></div>
+ <div class="section"><h2>Добавить / продлить человека</h2><div class="card"><div class="field"><label>Telegram ID или @username</label><input id="admTarget" placeholder="123456789 или @username"></div><div class="field"><label>Дней</label><input id="admDays" type="number" min="1" value="30"></div><button class="primary" id="admAdd">➕ Выдать подписку</button><div class="admin-note">Новая подписка автоматически получает 5 устройств и безлимитный трафик.</div></div></div>
+ <div class="section"><h2>Начислить баланс</h2><div class="card"><div class="field"><label>Telegram ID</label><input id="balTarget" placeholder="123456789"></div><div class="field"><label>Сумма (${BALANCE_TEXT})</label><input id="balAmount" type="number" step="1" min="0" placeholder="500"></div><button class="primary" id="admBal">💳 Начислить баланс</button></div></div>
+ <div class="section"><h2>Последние пользователи</h2><div class="card admin-list">${adminUsers.length?adminUsers.map(u=>`<div class="admin-user"><div class="admin-user-top"><span>${escapeHtml(u.name||'—')}</span><span>${u.active?'🟢':'🔴'}</span></div><div class="admin-user-meta">${escapeHtml(u.left_text||'—')} · ${u.devices_count||0}/${u.device_limit||MAX_DEVICES} устройств · ${gb(u.used_gb)}</div></div>`).join(''):'Пользователей пока нет.'}</div></div>`;
+ root.innerHTML=`<div class="top"><div class="brand"><span class="dot">🛡</span>VPNsor</div><div class="greet">Привет,<br><b>${escapeHtml(d.name||'друг')}</b></div></div>
+ <div class="panes">
+  <section class="pane active" data-pane="home"><div class="hero"><div class="num">${days}${(left!==null&&left!==undefined)?'<span>дн.</span>':''}</div><div class="cap">${active?'подписка активна':'подписка неактивна'}</div><div class="badge"><i></i>${active?'Активна':'Истекла'}</div>${d.exp?`<div class="meta">Действует до ${escapeHtml(dt(d.exp))}</div>`:''}<div class="meta">${MAX_DEVICE_TEXT} устройств · безлимитный трафик</div></div><div class="tiles"><div class="tile" data-goto="key"><span class="ic">🔑</span>Подключение</div><div class="tile" data-goto="devices"><span class="ic">📱</span>Устройства</div><div class="tile" data-goto="plans"><span class="ic">💳</span>Тарифы</div><div class="tile" data-goto="profile"><span class="ic">👤</span>Профиль</div>${isAdmin?'<div class="tile" data-goto="admin"><span class="ic">👑</span>Админка</div>':''}</div></section>
+  <section class="pane" data-pane="key"><div class="section"><h2>Подключение</h2>${keyPane}</div><div class="section"><h2>Клиенты</h2><div class="apps"><a class="app" href="https://happ.info/" target="_blank" rel="noopener">⚡ HAPP<small>Скачать и импортировать подписку</small></a><a class="app" href="https://v2raytun.com/" target="_blank" rel="noopener">🚀 v2RayTun<small>Скачать и импортировать подписку</small></a></div></div></section>
+  <section class="pane" data-pane="devices"><div class="section"><h2>Твои устройства</h2><div class="card"><b>${devices.length}/${MAX_DEVICE_TEXT}</b> устройств занято<div class="admin-note">Трафик безлимитный. Отдельный счётчик на устройство показывается только если его отдаёт API ноды.</div></div></div><div class="section">${devicePane}</div></section>
+  <section class="pane" data-pane="plans"><div class="section"><h2>Тарифы</h2>${plansPane}</div></section>
+  <section class="pane" data-pane="profile"><div class="section"><div class="profile-head"><div class="avatar">${initial}</div><div><div class="pname2">${escapeHtml(d.name||'Пользователь')}</div><div class="pid">ID: ${escapeHtml(d.uid||'—')}</div></div></div><div class="rows"><div class="row"><span>Статус</span><span>${active?'🟢 Активна':'🔴 Истекла'}</span></div><div class="row"><span>Тариф</span><span>${escapeHtml(d.plan||'—')}</span></div><div class="row"><span>Баланс</span><span>${Number(d.balance||0).toFixed(2)} ₽</span></div><div class="row"><span>Устройства</span><span>${devices.length}/${MAX_DEVICE_TEXT}</span></div><div class="row"><span>Трафик</span><span>♾ безлимит</span></div><div class="row"><span>До</span><span>${escapeHtml(dt(d.exp))}</span></div></div></div><div class="section"><h2>Установка</h2><div class="apps"><a class="app" href="https://happ.info/" target="_blank" rel="noopener">⚡ HAPP<small>Импорт ссылки подписки</small></a><a class="app" href="https://v2raytun.com/" target="_blank" rel="noopener">🚀 v2RayTun<small>Импорт ссылки подписки</small></a></div></div>${d.support?`<a class="support" href="${d.support}" target="_blank" rel="noopener">💬 Поддержка</a>`:''}</section>
+  ${isAdmin?`<section class="pane" data-pane="admin">${adminPane}<div class="section"><div class="card"><button class="secondary" id="admRefresh">🔄 Обновить</button></div></div></section>`:''}
+ </div>
+ <nav class="tabbar"><button class="navbtn active" data-tab="home"><span class="ic">🏠</span>Главная</button><button class="navbtn" data-tab="key"><span class="ic">🔑</span>Подключение</button><button class="navbtn" data-tab="devices"><span class="ic">📱</span>Устройства</button><button class="navbtn" data-tab="profile"><span class="ic">👤</span>Профиль</button>${navAdmin}</nav>`;
+ function unlocked(){return sessionStorage.getItem('vpnsor_admin_unlocked')==='1';}
+ function ensureAdmin(){if(!isAdmin)return false;if(unlocked())return true;const code=prompt('Введите код админ-панели');if(code===ADMIN_CODE){sessionStorage.setItem('vpnsor_admin_unlocked','1');return true;}alert('Неверный код');return false;}
+ function goTab(name){if(name==='admin'&&!ensureAdmin())name='home';document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.dataset.pane===name));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));window.scrollTo(0,0);}
+ document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.tab)));document.querySelectorAll('[data-goto]').forEach(t=>t.addEventListener('click',()=>goTab(t.dataset.goto)));
+ const cb=document.getElementById('copybtn');if(cb)cb.addEventListener('click',()=>copyText(d.key,cb));
+ const add=document.getElementById('admAdd');if(add)add.addEventListener('click',()=>{if(!ensureAdmin())return;const target=document.getElementById('admTarget').value.trim();const days=parseInt(document.getElementById('admDays').value,10);if(!target||!days||days<1){alert('Заполни ID/username и дни');return;}sendAdmin({kind:'admin_grant',code:ADMIN_CODE,target,days});});
+ const bal=document.getElementById('admBal');if(bal)bal.addEventListener('click',()=>{if(!ensureAdmin())return;const target=document.getElementById('balTarget').value.trim();const amount=Number(document.getElementById('balAmount').value);if(!/^[-]?[0-9]+$/.test(target)||!isFinite(amount)||amount<=0){alert('Нужны Telegram ID и положительная сумма');return;}sendAdmin({kind:'admin_balance',code:ADMIN_CODE,target,amount});});
+ const refresh=document.getElementById('admRefresh');if(refresh)refresh.addEventListener('click',()=>location.reload());
+}
+const MAX_DEVICE_TEXT='5'; const BALANCE_TEXT='RUB'; const ADMIN_CODE='2506';
+try{const app=tg();if(app){try{app.ready();app.expand();}catch(e){}}}catch(e){}
+try{const raw=new URLSearchParams(location.search).get('d');if(raw)render(JSON.parse(decodeURIComponent(raw)));}catch(e){console.error('VPNsor miniapp data parse error',e)}
+</script>
+</body></html>
